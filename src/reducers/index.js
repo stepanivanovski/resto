@@ -2,7 +2,8 @@ const initialState = {
   menu:[],
   loading: true,
   error: false,
-  cards: []
+  cards: [],
+  totalPrice: 0
 }
 
 const reducer = (state = initialState, action) => {
@@ -29,14 +30,17 @@ const reducer = (state = initialState, action) => {
     case 'ITEM_ADD_TO_CARD':
       const addedCardId = action.payload;
       const cardsItem = state.cards.find((item) => item.id === addedCardId)
-      const  menuItem = state.menu.find(item => item.id === addedCardId);
+      const menuItem = state.menu.find(item => item.id === addedCardId);
 
       if (cardsItem) {
-        const Cards = state.cards.map(item => item.id === addedCardId ? ( {...item, amount: ++item.amount, commonPrice: item.price * item.amount }) : item);
-        console.log(Cards);
+        const Cards = state.cards.map(card => card.id === addedCardId ? 
+          ({...card, amount: ++card.amount, commonPrice: card.price * card.amount }) : 
+          card);
+
         return {
           ...state,
-          cards: Cards         
+          cards: Cards,
+          totalPrice: state.totalPrice + menuItem.price
         }
       } else {
         menuItem.amount = 1;
@@ -44,11 +48,11 @@ const reducer = (state = initialState, action) => {
 
         return {
           ...state,
-          cards: [menuItem, ...state.cards]         
+          cards: [menuItem, ...state.cards],
+          totalPrice: state.totalPrice + menuItem.price        
         }
       }
         
-       
     case 'ITEM_DELETE_TO_CARD':
       const deletedCardId = action.payload;
       const deletedCard = state.cards.find(card => card.id === deletedCardId);
@@ -59,7 +63,8 @@ const reducer = (state = initialState, action) => {
 
       return {
         ...state,
-        cards: newCards
+        cards: newCards,
+        totalPrice: state.totalPrice - deletedCard.price
       }
 
      default: 
