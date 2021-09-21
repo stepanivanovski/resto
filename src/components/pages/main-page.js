@@ -1,10 +1,9 @@
-import React from 'react';
-import MenuList from '../menu-list';
+import React from "react";
+import MenuList from "../menu-list";
+import WithRestoService from '../hoc'
 
 const MainPage = () => {
-    return (
-        <MenuList/>
-    )
-}
+  return <MenuList/>;
+};
 
-export default MainPage;
+export default WithRestoService()(MainPage);
